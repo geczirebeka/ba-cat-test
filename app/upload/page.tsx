@@ -9,7 +9,7 @@ export default function UploadPage() {
                 type="file" 
                 id="cat_picture" 
                 name="cat_picture" 
-                accept=".png, .jpg, .jpeg .gif"
+                accept=".png, .jpg, .jpeg, .gif"
             />
             <button type="submit">
                 Upload
