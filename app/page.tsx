@@ -1,10 +1,11 @@
 import Image from 'next/image'
 
 export default async function Home() {
-  const url = `https://api.thecatapi.com/v1/images/search?limit=20`;
+  const url = `https://api.thecatapi.com/v1/images/?limit=100`;
 
   const data = await fetch(url, { headers: {
-    'x-api-key': process.env.API_KEY ?? ''
+    'x-api-key': process.env.API_KEY ?? '',
+    'Content-Type': 'application/json',
   }})
   const cats = await data.json()
 
