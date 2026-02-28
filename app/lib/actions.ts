@@ -22,15 +22,15 @@ export async function uploadCat(
         return 'File must be under 5MB.'
     }
 
-    const upstream = new FormData();
-    upstream.append('file', file, file.name);
+    const catApiForm = new FormData();
+    catApiForm.append('file', file, file.name);
 
     let response: Response;
     try {
         response = await fetch('https://api.thecatapi.com/v1/images/upload', {
             method: 'POST',
             headers: {'x-api-key': process.env.API_KEY ?? ''},
-            body: formData
+            body: catApiForm
         });
     } catch (err) {
         console.error('Upload error:', err);
