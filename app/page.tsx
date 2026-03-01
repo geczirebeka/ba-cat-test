@@ -8,7 +8,7 @@ const imagesData = fetch('https://api.thecatapi.com/v1/images/?limit=10&order=DE
         'Content-Type': 'application/json',
     },
     cache: 'no-store',
-})
+}).then(res => res.json())
 
 const favouritesData = fetch('https://api.thecatapi.com/v1/favourites', {
     headers: {
@@ -16,7 +16,7 @@ const favouritesData = fetch('https://api.thecatapi.com/v1/favourites', {
         'Content-Type': 'application/json',
     },
     cache: 'no-store',
-})
+}).then(res => res.json())
 
 export default async function Home() {
   const [imagesResult, favouritesResult] = await Promise.allSettled([imagesData, favouritesData])
@@ -26,9 +26,9 @@ export default async function Home() {
       throw new Error('Failed to fetch cats')
   }
 
-  const cats = await imagesResult.value.json()
+  const cats = await imagesResult.value
   const favourites = favouritesResult.status === 'fulfilled' 
-      ? await favouritesResult.value.json() 
+      ? await favouritesResult.value
       : []
 
   return (
