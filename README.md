@@ -87,3 +87,21 @@ Currently tests cover `calculateScore` and the `useFavourites` hook. The upload 
 ### Image upload feedback
 
 The upload page redirects immediately after a successful upload but gives no confirmation to the user that it worked. A success toast notification on the home page after being redirected would improve the experience.
+
+## Code Improvements
+
+### Component decomposition
+
+The `CatList` component currently handles rendering, favouriting and voting all in one place. It would be cleaner to split it into smaller components with a single responsibility.
+
+### Suspense and streaming
+
+Currently the home page waits for all three API calls to complete before rendering anything. Using React Suspense would allow parts of the page to stream in as they resolve, so the cat images could show immediately while favourites and votes load separately.
+
+### Server components vs client components
+
+Currently `CatList` is a client component because it needs interactivity. With better decomposition, only the interactive parts need to be client components — the grid layout and image rendering could stay as server components.
+
+### Extract API calls into a data layer
+
+The fetch calls in `page.tsx` could be moved into a dedicated data layer, making them reusable and easier to test.
