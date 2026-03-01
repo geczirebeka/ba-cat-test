@@ -16,7 +16,14 @@ A web app for uploading and managing your cat images, built with Next.js and the
 
 Sign up for a free API key at [thecatapi.com](https://thecatapi.com).
 
-### 2. Set up environment variables
+### 2. Clone the repository
+
+```bash
+git clone https://github.com/geczirebeka/ba-cat-test.git
+cd ba-cat-test
+```
+
+### 3. Set up environment variables
 
 Create a `.env.local` file in the root of the project:
 
@@ -24,13 +31,13 @@ Create a `.env.local` file in the root of the project:
 API_KEY=your_api_key_here
 ```
 
-### 3. Install dependencies
+### 4. Install dependencies
 
 ```bash
 npm install
 ```
 
-### 4. Run the development server
+### 5. Run the development server
 
 ```bash
 npm run dev
