@@ -6,8 +6,9 @@ const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
 const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 
 export async function uploadCat(
+    _pervState: string | null,
     formData: FormData
-){
+): Promise<string | null> {
     const file = formData.get('cat_picture') as File
 
     if (!file || file.size === 0) {
@@ -15,7 +16,7 @@ export async function uploadCat(
     }
 
     if (!ACCEPTED_TYPES.includes(file.type)) {
-        return 'File must be a JPEG, PNG, GIF, or WebP image.'
+        return 'File must be a JPEG, PNG, GIF image.'
     }
 
     if (file.size > MAX_SIZE) {
@@ -34,12 +35,22 @@ export async function uploadCat(
         });
     } catch (err) {
         console.error('Upload error:', err);
-        return 'Network error'
+        return 'Network error. Please check your connection and try again.'
     }
 
     if (!response.ok) {
-        const err = await response.json().catch(() => ({}))
-        return err?.message ?? `Upload failed (${response.status})`
+        const rawError = await response.text()
+        let message: string
+        try {
+            const parsed = JSON.parse(rawError)
+            message = parsed?.message ?? rawError
+        } catch {
+            message = rawError
+        }
+
+        console.error('CatAPI error:', response.status, message)
+        if (response.status === 400 && message) return message
+        return 'Something went wrong. Please try again.'
     }
     
     redirect('/')
