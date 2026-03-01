@@ -99,3 +99,27 @@ export async function unfavouriteCat(favouriteId: number): Promise<string | null
         return 'Network error. Please try again.'
     }
 }
+
+export async function voteOnCat(imageId: string, value: 1 | 0): Promise<string | null> {
+    try {
+        const response = await fetch('https://api.thecatapi.com/v1/votes', {
+            method: 'POST',
+            headers: {
+                'x-api-key': process.env.API_KEY ?? '',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ image_id: imageId, value }),
+        })
+
+        if (!response.ok) {
+            const rawError = await response.text()
+            console.error('Vote error:', response.status, rawError)
+            return 'Failed to vote. Please try again.'
+        }
+
+        return null
+    } catch (err) {
+        console.error('Vote error:', err)
+        return 'Network error. Please try again.'
+    }
+}
