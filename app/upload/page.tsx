@@ -2,12 +2,19 @@
 
 import { useActionState } from "react";
 import { uploadCat } from "../lib/actions";
+import Link from "next/link";
 
 export default function UploadPage() {
     const [error, formAction, isPending] = useActionState(uploadCat, null)
 
     return (
         <main className="max-w-md mx-auto mt-16 px-4">
+            <Link 
+                href="/"
+                className="text-sm text-gray-500 hover:text-gray-800 transition-colors mb-6 inline-block"
+            >
+                ← Back
+            </Link>
             <h1 className="text-2xl font-bold mb-6">Upload a cat</h1>
             <form action={formAction} className="flex flex-col gap-4">
                 {error && (
