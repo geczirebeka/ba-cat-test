@@ -1,14 +1,35 @@
 import Image from 'next/image'
 import Link from 'next/link';
+import CatList from './components/CatList';
+
+const imagesData = fetch('https://api.thecatapi.com/v1/images/?limit=10&order=DESC', {
+    headers: {
+        'x-api-key': process.env.API_KEY ?? '',
+        'Content-Type': 'application/json',
+    },
+    cache: 'no-store',
+})
+
+const favouritesData = fetch('https://api.thecatapi.com/v1/favourites', {
+    headers: {
+        'x-api-key': process.env.API_KEY ?? '',
+        'Content-Type': 'application/json',
+    },
+    cache: 'no-store',
+})
 
 export default async function Home() {
-  const url = `https://api.thecatapi.com/v1/images/?limit=100`;
+  const [imagesResult, favouritesResult] = await Promise.allSettled([imagesData, favouritesData])
 
-  const data = await fetch(url, { headers: {
-    'x-api-key': process.env.API_KEY ?? '',
-    'Content-Type': 'application/json',
-  }})
-  const cats = await data.json()
+
+  if (imagesResult.status === 'rejected') {
+      throw new Error('Failed to fetch cats')
+  }
+
+  const cats = await imagesResult.value.json()
+  const favourites = favouritesResult.status === 'fulfilled' 
+      ? await favouritesResult.value.json() 
+      : []
 
   return (
     <main className="max-w-6xl mx-auto px-4 py-10">
@@ -21,21 +42,7 @@ export default async function Home() {
         Upload a cat
         </Link>
       </div>
-      <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 list-none p-0">
-        {cats.map((cat) => (
-          <li key={cat.id}>
-            <div className="relative aspect-square rounded-lg overflow-hidden">
-              <Image
-                src={cat.url}
-                alt="Cat picture"
-                fill
-                sizes="(max-width: 640px) 100vw, (max-width: 960px) 50vw, 25vw"
-                className="object-cover"
-              />
-            </div>
-          </li>
-        ))}
-      </ul>
+      <CatList cats={cats} initialFavourites={favourites} />
     </main>
   );
 }

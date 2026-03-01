@@ -55,3 +55,47 @@ export async function uploadCat(
     
     redirect('/')
 }
+
+export async function favouriteCat(imageId: string): Promise<{ id: number } | string> {
+    try {
+        const response = await fetch('https://api.thecatapi.com/v1/favourites', {
+            method: 'POST',
+            headers: {
+                'x-api-key': process.env.API_KEY ?? '',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ image_id: imageId }),
+        })
+
+        if (!response.ok) {
+            const rawError = await response.text()
+            console.error('Favourite error:', response.status, rawError)
+            return 'Failed to favourite cat. Please try again.'
+        }
+
+        const data = await response.json()
+        return { id: data.id }
+    } catch (err) {
+        console.error('Favourite error:', err)
+        return 'Network error. Please try again.'
+    }
+}
+
+export async function unfavouriteCat(favouriteId: number): Promise<string | null> {
+    try {
+        const response = await fetch(`https://api.thecatapi.com/v1/favourites/${favouriteId}`, {
+            method: 'DELETE',
+            headers: { 'x-api-key': process.env.API_KEY ?? '' },
+        })
+
+        if (!response.ok) {
+            console.error('Unfavourite error:', response.status)
+            return 'Failed to unfavourite cat. Please try again.'
+        }
+
+        return null
+    } catch (err) {
+        console.error('Unfavourite error:', err)
+        return 'Network error. Please try again.'
+    }
+}
