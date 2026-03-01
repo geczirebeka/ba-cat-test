@@ -1,11 +1,12 @@
 'use client'
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { uploadCat } from "../lib/actions";
 import Link from "next/link";
 
 export default function UploadPage() {
     const [error, formAction, isPending] = useActionState(uploadCat, null)
+    const [fileName, setFileName] = useState<string | null>(null)
 
     return (
         <main className="max-w-md mx-auto mt-16 px-4">
@@ -20,18 +21,31 @@ export default function UploadPage() {
                 {error && (
                     <p className="text-red-500 text-small">{error}</p>
                 )}
+                <div className="flex items-center gap-3">
+                    <label
+                        htmlFor="cat_picture"
+                        className="border border-gray-800 text-gray-800 text-sm font-semibold px-4 py-2 rounded-md hover:bg-gray-800 hover:text-white transition-colors cursor-pointer"
+                    >
+                        Choose a file
+                    </label>
+                    <span className="text-sm text-gray-500">
+                        {fileName ?? 'No file chosen'}
+                    </span>
+                </div>
                 <input
-                type="file"
-                id="cat_picture"
-                name="cat_picture"
-                accept=".png,.jpg,.jpeg,.gif"
-                required
-                className="border border-gray-300 rounded-md p-2 text-sm"
+                    type="file"
+                    id="cat_picture"
+                    name="cat_picture"
+                    accept=".png,.jpg,.jpeg,.gif"
+                    required
+                    className="sr-only"
+                    onChange={(e) => setFileName(e.target.files?.[0]?.name ?? null)}
                 />
+
                 <button
                 type="submit"
                 disabled={isPending}
-                className="bg-gray-800 text-white font-semibold py-2 px-4 rounded-md hover:bg-gray-700 transition-colors cursor-pointer"
+                className="border border-gray-800 text-gray-800 text-sm font-semibold px-4 py-2 rounded-md hover:bg-gray-800 hover:text-white transition-colors cursor-pointer"
                 >
                 {isPending ? 'Uploading...' : 'Upload'}
                 </button>
