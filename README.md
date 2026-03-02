@@ -48,7 +48,7 @@ Open [http://localhost:3000](http://localhost:3000) to see the app.
 ## Running Tests
 
 ```bash
-npm test
+npx jest
 ```
 
 ## Tech Stack
@@ -95,7 +95,19 @@ Currently tests cover `calculateScore` and the `useFavourites` hook. The upload 
 
 The upload page redirects immediately after a successful upload but gives no confirmation to the user that it worked. A success toast notification on the home page after being redirected would improve the experience.
 
+### Drag and drop uploads
+
+The current upload page uses a standard file input. A better experience would be a drag and drop zone where users can drop images directly onto the page. The [react-dropzone](https://react-dropzone.js.org/) library handles this well, including built-in validation for file type and size, accessibility, and mobile fallback to the native file picker. It also removes the need to duplicate file validation that already exists in the server action.
+
 ## Code Improvements
+
+### React 19 features
+
+The app already uses some React 19 features — `useActionState` for form state management and `useFormStatus` for the upload button's pending state. There are a few more that could improve the codebase:
+
+- **`useOptimistic`** — the favouriting logic in `useFavourites` currently manages optimistic updates manually with `useState`, including manual revert logic if the API call fails. Refactoring to use `useOptimistic` would make the revert-on-failure behaviour automatic rather than manually managed
+- **`useTransition`** — wrapping the vote and favourite handlers in `startTransition` would mark them as non-urgent updates, keeping the UI responsive while the server action is in flight and giving access to an `isPending` state to disable buttons during the request
+- **`use`** — the data fetching in `page.tsx` currently blocks rendering until all three API calls resolve. Passing promises as props and unwrapping them with `use` inside a `Suspense` boundary would allow the page to stream in progressively, showing cat images immediately while votes and favourites load separately
 
 ### Component decomposition
 
